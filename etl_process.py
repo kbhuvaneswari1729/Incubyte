@@ -61,7 +61,7 @@ def insert_data_into_country_table(cursor, record, country):
         'VAC_ID': record.get('VAC_ID'),
         'DR_Name': record.get('DR_Name'),
         'State': record.get('State'),
-        'County': record['Country'],
+        'Country': record['Country'],
         'DOB': record['DOB'],
         'FLAG': record['FLAG'],
         'Age': age,
