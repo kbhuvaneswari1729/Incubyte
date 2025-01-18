@@ -6,7 +6,7 @@ CREATE TABLE Database_name.Schema_name.Staging_Customers (
     VAC_ID CHAR(5),
     DR_Name VARCHAR(255),
     State CHAR(5),
-    County CHAR(5),
+    Country CHAR(5),
     DOB DATE,
     FLAG CHAR(1),
     Age INT GENERATED ALWAYS AS (DATEDIFF(CURRENT_DATE(), DOB) / 365) STORED,
