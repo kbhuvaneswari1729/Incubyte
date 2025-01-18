@@ -1,9 +1,9 @@
 import logging
-from Incubyte.extract import load_data_from_staging
-from Incubyte.transform import transform_data
-from Incubyte.load import load_to_country_tables
-from Incubyte.validations import validate_data
-from Incubyte.config import SNOWFLAKE_ACCOUNT, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD, SNOWFLAKE_DATABASE, SNOWFLAKE_SCHEMA, SNOWFLAKE_WAREHOUSE
+from etl_process.extract import load_data_from_staging
+from etl_process.transform import transform_data
+from etl_process.load import load_to_country_tables
+from etl_process.validations import validate_data
+from etl_process.config import SNOWFLAKE_ACCOUNT, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD, SNOWFLAKE_DATABASE, SNOWFLAKE_SCHEMA, SNOWFLAKE_WAREHOUSE
 import snowflake.connector
 
 logging.basicConfig(level=logging.INFO)
@@ -21,7 +21,7 @@ def get_snowflake_connection():
     )
     return conn
 
-def etl_process():
+def etl_processing():
     """The main ETL process to load data into respective country tables."""
     logger.info("ETL process started.")
 
@@ -42,6 +42,6 @@ def etl_process():
 
 if __name__ == "__main__":
     try:
-        etl_process()
+        etl_processing()
     except Exception as e:
         logger.error(f"ETL process failed: {e}")
