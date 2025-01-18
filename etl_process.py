@@ -49,8 +49,8 @@ def insert_data_into_country_table(cursor, record, country):
 
     # Create SQL query for inserting data
     insert_sql = f"""
-        INSERT INTO Table_{country} (Cust_I, Open_Dt, Consul_Dt, VAC_ID, DR_Name, State, County, DOB, FLAG, Age, Days_Since_Last_Consulted)
-        VALUES (%(Cust_I)s, %(Open_Dt)s, %(Consul_Dt)s, %(VAC_ID)s, %(DR_Name)s, %(State)s, %(County)s, %(DOB)s, %(FLAG)s, %(Age)s, %(Days_Since_Last_Consulted)s)
+        INSERT INTO Table_{country} (Cust_I, Open_Dt, Consul_Dt, VAC_ID, DR_Name, State, Country, DOB, FLAG, Age, Days_Since_Last_Consulted)
+        VALUES (%(Cust_I)s, %(Open_Dt)s, %(Consul_Dt)s, %(VAC_ID)s, %(DR_Name)s, %(State)s, %(Country)s, %(DOB)s, %(FLAG)s, %(Age)s, %(Days_Since_Last_Consulted)s)
     """
     
     # Execute the SQL with the record data
@@ -61,7 +61,7 @@ def insert_data_into_country_table(cursor, record, country):
         'VAC_ID': record.get('VAC_ID'),
         'DR_Name': record.get('DR_Name'),
         'State': record.get('State'),
-        'County': record['County'],
+        'County': record['Country'],
         'DOB': record['DOB'],
         'FLAG': record['FLAG'],
         'Age': age,
@@ -72,7 +72,7 @@ def insert_data_into_country_table(cursor, record, country):
 def fetch_staging_data(cursor):
     # Example query to fetch the relevant staging records
     query = """
-        SELECT Cust_I, Open_Dt, Consul_Dt, VAC_ID, DR_Name, State, County, DOB, FLAG
+        SELECT Cust_I, Open_Dt, Consul_Dt, VAC_ID, DR_Name, State, Country, DOB, FLAG
         FROM Staging_Customers
         WHERE FLAG = 'A';  -- Only active customers for now
     """
@@ -93,13 +93,13 @@ def etl_process(cursor):
             'VAC_ID': record[3],
             'DR_Name': record[4],
             'State': record[5],
-            'County': record[6],
+            'Country': record[6],
             'DOB': record[7],
             'FLAG': record[8]
         }
 
-        # Extract the country code (County) from the record
-        country = row['County']
+        # Extract the country code (Country) from the record
+        country = row['Country']
 
         # Insert data into the corresponding country table
         insert_data_into_country_table(cursor, row, country)
