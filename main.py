@@ -1,19 +1,33 @@
 import logging
-from sqlalchemy import create_engine
-from etl.extract import load_data_from_staging
-from etl.transform import transform_data
-from etl.load import load_to_country_tables
-from etl.validations import validate_data
+from Incubyte.extract import load_data_from_staging
+from Incubyte.transform import transform_data
+from Incubyte.load import load_to_country_tables
+from Incubyte.validations import validate_data
+from Incubyte.config import SNOWFLAKE_ACCOUNT, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD, SNOWFLAKE_DATABASE, SNOWFLAKE_SCHEMA, SNOWFLAKE_WAREHOUSE
+import snowflake.connector
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-def etl_process(engine):
+def get_snowflake_connection():
+    """Create and return a Snowflake connection."""
+    conn = snowflake.connector.connect(
+        user=SNOWFLAKE_USER,
+        password=SNOWFLAKE_PASSWORD,
+        account=SNOWFLAKE_ACCOUNT,
+        warehouse=SNOWFLAKE_WAREHOUSE,
+        database=SNOWFLAKE_DATABASE,
+        schema=SNOWFLAKE_SCHEMA
+    )
+    return conn
+
+def etl_process():
     """The main ETL process to load data into respective country tables."""
     logger.info("ETL process started.")
 
     # Step 1: Extract
-    df = load_data_from_staging(engine)
+    conn = get_snowflake_connection()
+    df = load_data_from_staging()
 
     # Step 2: Validate the data
     validate_data(df)
@@ -22,10 +36,12 @@ def etl_process(engine):
     df_transformed = transform_data(df)
 
     # Step 4: Load the data into respective country tables
-    load_to_country_tables(df_transformed, engine)
+    load_to_country_tables(df_transformed)
 
     logger.info("ETL process completed.")
 
 if __name__ == "__main__":
-    engine = create_engine("postgresql://username:password@hostname:port/dbname")
-    etl_process(engine)
+    try:
+        etl_process()
+    except Exception as e:
+        logger.error(f"ETL process failed: {e}")
